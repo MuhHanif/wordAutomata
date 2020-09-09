@@ -1,6 +1,5 @@
 from docx import Document as dc
-import pandas as pd
-
+import csv
 
 class editor(object):
     """read, edit, and write document"""
@@ -19,15 +18,21 @@ class editor(object):
         pGraphCount = len(doc.paragraphs)
 
         #get this data from csv and loop
+        with open(csvData) as dataCsv:
 
-        replacementFile = pd.read_csv(csvData, header=None)
+            #convert csv to list
+            readCsv = list(csv.reader(dataCsv, delimiter=","))
 
-        print(replacementFile)
+            pass
 
-        for x in range(len(replacementFile.iloc[:,0])):
+        print(readCsv)
 
-            replaceFieldFound = replacementFile.iloc[x, 0]
-            textReplacement = replacementFile.iloc[x, 1]
+        #loop through csv data
+        for x in range(len(readCsv)):
+
+            #read specific data from csv
+            replaceFieldFound = readCsv[x][0]
+            textReplacement = readCsv[x][1]
             print(replaceFieldFound)
             print(textReplacement)
 
@@ -50,12 +55,8 @@ class editor(object):
                     if replaceFieldFound in runData.text:
 
                         #notification
-                        print("[",replaceFieldFound,"terganti dengan", textReplacement,"]")
+                        print("paragraph",paragraph,"run",run,"[",replaceFieldFound,"terganti dengan", textReplacement,"]")
                         runData.text = runData.text.replace(replaceFieldFound, textReplacement)
-                        print(runData.text)
-
-                        #print paragraph to cmd
-                        print(paragraph," ",run," ","[" + doc.paragraphs[paragraph].runs[run].text + "]")
 
                         pass
 
@@ -66,7 +67,21 @@ class editor(object):
 
         pass
 
-#document directory
-data = input("masukkan directory word: ")
+while True:
 
-file = editor().entryTemplateFieldContent(data, "result.docx", "replace.csv")
+    try:
+
+        pass
+        #document directory
+        data = input("masukkan directory word: ")
+        replace = input("masukan directory csv pengganti: ")
+        output = input("nama file output: ")
+
+        file = editor().entryTemplateFieldContent(data, output, replace)
+
+        pass
+
+    except:
+
+        print("error salah entry")
+        pass

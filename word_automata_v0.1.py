@@ -1,5 +1,6 @@
 from docx import Document as dc
 import csv
+import xlrd
 
 class editor(object):
     """read, edit, and write document"""
@@ -9,61 +10,72 @@ class editor(object):
         #set global variable
         pass
 
-    def entryTemplateFieldContent(self, dir, documentName, csvData):
+    def entryTemplateFieldContent(self, dir, csvData):
 
-        #read document
-        doc = dc(dir)
-
-        #count paragraph
-        pGraphCount = len(doc.paragraphs)
 
         #get this data from csv and loop
-        with open(csvData) as dataCsv:
+        readExcel = xlrd.open_workbook(csvData)
+        sheet = readExcel.sheet_by_index(0)
 
-            #convert csv to list
-            readCsv = list(csv.reader(dataCsv, delimiter=","))
-
-            pass
-
-        print(readCsv)
 
         #loop through csv data
-        for x in range(len(readCsv)):
 
-            #read specific data from csv
-            replaceFieldFound = readCsv[x][0]
-            textReplacement = readCsv[x][1]
-            print(replaceFieldFound)
-            print(textReplacement)
+        #iterate through rows
+        for x in range(sheet.nrows - 1):
+            #read document
+            doc = dc(dir)
 
-            #read all paragraph
-            for paragraph in range(0, pGraphCount):
+            #count paragraph
+            pGraphCount = len(doc.paragraphs)
 
-                #get each paragraph
-                pGraph = doc.paragraphs[paragraph]
+            fileName = sheet.cell_value(x + 1,0)
+            print(fileName)
 
-                #count run
-                runCount = len(pGraph.runs)
+            #iterate through columns
+            for cols in range(sheet.ncols):
 
-                #read all
-                for run in range(0, runCount):
+                #read specific data from csv
+                replaceFieldFound = sheet.cell_value(0, cols) #this value holds
+                textReplacement = sheet.cell_value(x + 1, cols) #this value varies
 
-                    #get each run
-                    runData = pGraph.runs[run]
+                #for debug only
+                #print(replaceFieldFound)
+                #print(textReplacement)
 
-                    #replace field with desired text
-                    if replaceFieldFound in runData.text:
+                #read all paragraph
+                for paragraph in range(0, pGraphCount):
 
-                        #notification
-                        print("paragraph",paragraph,"run",run,"[",replaceFieldFound,"terganti dengan", textReplacement,"]")
-                        runData.text = runData.text.replace(replaceFieldFound, textReplacement)
+                    #get each paragraph
+                    pGraph = doc.paragraphs[paragraph]
+
+                    #count run
+                    runCount = len(pGraph.runs)
+
+                    #read all
+                    for run in range(0, runCount):
+
+                        #get each run
+                        runData = pGraph.runs[run]
+
+                        #replace field with desired text
+                        if replaceFieldFound in runData.text:
+
+                            #notification
+                            print("paragraph",paragraph,"run",run,"[",replaceFieldFound,"terganti dengan", textReplacement,"]")
+                            runData.text = runData.text.replace(replaceFieldFound, str(textReplacement))
+
+                            pass
 
                         pass
 
-                        pass
+                    pass
 
+                pass
+
+            doc.save(fileName + ".docx")
+            print("done! created file as",fileName + ".docx")
+            #some bug casues print fist row only !
             pass
-        doc.save(documentName)
 
         pass
 
@@ -71,17 +83,24 @@ while True:
 
     try:
 
-        pass
         #document directory
         data = input("masukkan directory word: ")
-        replace = input("masukan directory csv pengganti: ")
-        output = input("nama file output: ")
+        replace = input("masukan directory excel pengganti: ")
 
-        file = editor().entryTemplateFieldContent(data, output, replace)
+        #break ethernal loop
+        if data == "quit":
+
+            break
+
+        #output = input("nama file output: ")
+
+        file = editor().entryTemplateFieldContent(data, replace)
 
         pass
 
     except:
 
+        #spit error
         print("error salah entry")
+
         pass

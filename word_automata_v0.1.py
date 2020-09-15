@@ -1,6 +1,7 @@
 from docx import Document as dc
 import csv
 import xlrd
+import tkinter as tk
 
 class editor(object):
     """read, edit, and write document"""
@@ -66,14 +67,28 @@ class editor(object):
 
         pass
 
-    def entryTemplateFieldContentTable(self, dir, csvData):
+    def entryTemplateFieldContentTable(self, dir, csvData, isAll, start, finish):
 
         #get this data from csv and loop
         readExcel = xlrd.open_workbook(csvData)
         sheet = readExcel.sheet_by_index(0)
 
+        if isAll == True:
+
+            rangeBegin = 0
+            rangeEnd = sheet.nrows - 1
+
+            pass
+
+        else:
+
+            rangeBegin = start - 1
+            rangeEnd = finish
+
+            pass
+
         #iterate through data entry excel rows
-        for x in range(sheet.nrows - 1):
+        for x in range(rangeBegin, rangeEnd):
 
             #read document
             doc = dc(dir)
@@ -157,28 +172,95 @@ class editor(object):
 
         pass
 
-while True:
 
-    try:
+#create gui out from this ethernal loop
+#while True:
+#
+#    try:
+#
+#        #document directory
+#        data = input("masukkan directory word: ")
+#        replace = input("masukan directory excel pengganti: ")
+#        start = input("masukan urutan row awal yang mau di buat: ")
+#        finish = input("masukan urutan row akhir yang mau di buat: ")
+#
+#        #break ethernal loop
+#        if data == "quit":
+#
+#            break
+#
+#        #output = input("nama file output: ")
+#
+#        file = editor().entryTemplateFieldContentTable(data, replace, False, int(start), int(finish))
+#
+#        pass
+#
+#    except:
+#
+#        #spit error
+#        print("error salah entry")
+#
+#        pass
+#
 
-        #document directory
-        data = input("masukkan directory word: ")
-        replace = input("masukan directory excel pengganti: ")
+windowEntry = tk.Tk()
+windowTitle = windowEntry.title("Batch format generator! (~^3^)~")
 
-        #break ethernal loop
-        if data == "quit":
+windowWidth = 400
+windowHeight = 300
 
-            break
+#create initial canvas
+canvas = tk.Canvas(windowEntry, width=windowWidth, height=windowHeight)
+canvas.pack()
 
-        #output = input("nama file output: ")
+#label entry for word dir
+wordText = tk.Label(windowEntry, text = "masukkan directory word: ")
+canvas.create_window(windowWidth/2, 40, window=wordText)
 
-        file = editor().entryTemplateFieldContentTable(data, replace)
+#set word entry object
+entryWord = tk.Entry(windowEntry)
+canvas.create_window(windowWidth/2, 60, window=entryWord)
 
-        pass
+#label entry for excel dir
+excelText = tk.Label(windowEntry, text = "masukkan directory excel: ")
+canvas.create_window(windowWidth/2, 80, window=excelText)
 
-    except:
+#set excel entry object
+entryExcel = tk.Entry(windowEntry)
+canvas.create_window(windowWidth/2, 100, window=entryExcel)
 
-        #spit error
-        print("error salah entry")
+#label entry for start row
+startText = tk.Label(windowEntry, text = "masukan urutan row awal yang mau dibuat: ")
+canvas.create_window(windowWidth/2, 120, window=startText)
 
-        pass
+#set start row
+entryStartText = tk.Entry(windowEntry)
+canvas.create_window(windowWidth/2, 140, window=entryStartText)
+
+#label entry for stop row
+stopText = tk.Label(windowEntry, text = "masukan urutan row akhir yang mau dibuat: ")
+canvas.create_window(windowWidth/2, 160, window=stopText)
+
+#set stop row
+entryStopText = tk.Entry(windowEntry)
+canvas.create_window(windowWidth/2, 180, window=entryStopText)
+
+#excecute button
+
+
+
+def executeClass():
+
+    word = entryWord.get()
+    excel = entryExcel.get()
+    start = float(entryStartText.get())
+    stop = float(entryStopText.get())
+    file = editor().entryTemplateFieldContentTable(word, excel, False, int(start), int(stop))
+
+    print(word)
+    pass
+
+button = tk.Button(text="GO!", command=executeClass)
+canvas.create_window(windowWidth/2, 220, window=button)
+
+windowEntry.mainloop()

@@ -173,7 +173,35 @@ class editor(object):
         pass
 
 
-#create gui
+#create gui out from this ethernal loop
+#while True:
+#
+#    try:
+#
+#        #document directory
+#        data = input("masukkan directory word: ")
+#        replace = input("masukan directory excel pengganti: ")
+#        start = input("masukan urutan row awal yang mau di buat: ")
+#        finish = input("masukan urutan row akhir yang mau di buat: ")
+#
+#        #break ethernal loop
+#        if data == "quit":
+#
+#            break
+#
+#        #output = input("nama file output: ")
+#
+#        file = editor().entryTemplateFieldContentTable(data, replace, False, int(start), int(finish))
+#
+#        pass
+#
+#    except:
+#
+#        #spit error
+#        print("error salah entry")
+#
+#        pass
+#
 
 windowEntry = tk.Tk()
 windowTitle = windowEntry.title("Batch format generator! (~^3^)~")
